@@ -27,7 +27,7 @@ def solution(x: np.array, y: np.array) -> bool:
     # сравним входные два массива с нашим образцовым
     pvalue1 = ks_2samp(pattern,x).pvalue
     pvalue2 = ks_2samp(pattern,y).pvalue
-    if pvalue1 < 0.052 or pvalue2 < 0.052:
+    if pvalue1 < 0.05 or pvalue2 < 0.05:
         return True
     
     return False
