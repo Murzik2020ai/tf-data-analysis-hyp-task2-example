@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-
+from scipy. stats import norm
+from scipy.stats import ks_2samp
 
 chat_id = 1226526788
 
@@ -21,19 +22,14 @@ def solution(x: np.array, y: np.array) -> bool:
     Возвращаемое значение: bool-значение , ответ на вопрос "Отклонить ли гипотезу однородности выборок"
     на заданном уровне значимости.
     '''
-    # make dataframe
-    df = pd.DataFrame({'x':x,'y':y})
-    df_describe = df.describe().T
-    mean_lst = list(df_describe['mean'])  # список со значением средних
-    std_lst = list(df_describe['std'])  # список со значиниями дисперсий
-    flag = True
-    level_mean = 0.258  # пороговое значение отклонения среднего на исторических данных
-    levle_std = 0.1506 # пороговое значение отклонения дисперсии на исторических данных
-    for i in range(len(mean_lst)):
-      # если есть отклонения больше пороговых значений, то мы бракуем выборку
-      if abs(mean_lst[i]) > level_mean or abs(std_lst[i] - 1) > level_std:
-        flag = False
-        break
-    return flag
+    # сделаем образцовую выборку нормального распределения со средним = 0 и дисперсией =1
+    pattern = norm.rvs(loc=0,scale=1,size=len(x))
+    # сравним входные два массива с нашим образцовым
+    pvalue1 = ks_2samp(pattern,x).pvalue
+    pvalue2 = ks_2samp(pattern,y).pvalue
+    if pvalue1 < 0.052 or pvalue2 < 0.052:
+        return True
+    
+    return False
     
     
